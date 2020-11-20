@@ -1,10 +1,10 @@
 #include <iostream>
 using namespace std;
 
-//this is my program
+//this is main
 int main(){
-    int y;
-    cin >> y;
-    cout << y << endl;
+    int x;
+    cin >> x;
+    cout << x << endl;
     return 0;
 }
