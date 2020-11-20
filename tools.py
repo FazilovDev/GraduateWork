@@ -154,6 +154,22 @@ def get_platiarism(file1, file2, k, q, w):
                 pass
         else:
             mergedPoints.append(points[i])
+    return mergedPoints
+    '''
+            text1 = get_text_from_file(self.file1)
+        mergedPoints = get_platiarism(self.file1, self.file2, k, q, w)
+        newCode = text1[: mergedPoints[0][0]]
+        plagCount = 0
+        for i in range(len(mergedPoints)):
+            if mergedPoints[i][1] > mergedPoints[i][0]:
+                plagCount += mergedPoints[i][1] - mergedPoints[i][0]
+                label = Label(text="", bg="yellow")
+                newCode = newCode + '|||\x1b[6;30;42m' + text1[mergedPoints[i][0] : mergedPoints[i][1]] + '\x1b[0m|||'
+                if i < len(mergedPoints) - 1:
+                    newCode = newCode + text1[mergedPoints[i][1] : mergedPoints[i+1][0]]
+                else:
+                    newCode = newCode + text1[mergedPoints[i][1] :]
+                    
     newCode = text1[: mergedPoints[0][0]]
     plagCount = 0
     for i in range(len(mergedPoints)):
@@ -168,3 +184,5 @@ def get_platiarism(file1, file2, k, q, w):
     #print("Jaccard: ", len(points) /(len(fp1) + len(fp2) - len(points)))
     #print("sim(file1, file2): ", len(points)/min(len(fp1), len(fp2)))
     print("\nПлагиат в файле: " + file1 + "\n"+newCode)
+    return newCode
+    '''
