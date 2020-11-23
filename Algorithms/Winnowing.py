@@ -121,7 +121,6 @@ def get_platiarism(file1, file2, k, q, w):
     fp1 = winnow(hashes1, w)
     fp2 = winnow(hashes2, w)
 
-    newCode = ''
     points = []
     for i in fp1:
         for j in fp2:
@@ -155,6 +154,71 @@ def get_platiarism(file1, file2, k, q, w):
         else:
             mergedPoints.append(points[i])
     return mergedPoints
+
+def get_points(fp1, fp2, token, hashes, grams):
+    points = []
+    for i in fp1:
+        for j in fp2:
+            if i == j:
+                flag = 0
+                startx = endx = None
+                match = hashes.index(i)
+                newStart = grams[match].start_pos
+                newEnd = grams[match].end_pos
+
+                for k in token:
+                    if k[2] == newStart: 
+                        startx = k[1]
+                        flag = 1
+                    if k[2] == newEnd:
+                        endx = k[1]
+                if flag == 1 and endx != None:
+                    points.append([startx, endx])
+    points.sort(key = lambda x: x[0])
+    points = points[1:]
+    return points
+
+def get_merged_points(points):
+    mergedPoints = []
+    mergedPoints.append(points[0])
+    for i in range(1, len(points)):
+        last = mergedPoints[len(mergedPoints) - 1]
+        if points[i][0] >= last[0] and points[i][0] <= last[1]:
+            if points[i][1] > last[1]:
+                mergedPoints = mergedPoints[: len(mergedPoints)-1]
+                mergedPoints.append([last[0], points[i][1]])
+            else:
+                pass
+        else:
+            mergedPoints.append(points[i])
+    return mergedPoints
+
+def get_fingerprints(file1, file2, k, q, w):
+    text1 = get_text_from_file(file1)
+    text2 = get_text_from_file(file2)
+
+    token1 = tokenize(file1)
+    token2 = tokenize(file2)
+
+    text1proc = toText(token1)
+    text2proc = toText(token2)
+
+    grams1 = get_k_grams_from_text(text1proc, k, q)
+    grams2 = get_k_grams_from_text(text2proc, k, q)
+
+    hashes1 = get_hashes_from_grams(grams1)
+    hashes2 = get_hashes_from_grams(grams2)
+
+    fp1 = winnow(hashes1, w)
+    fp2 = winnow(hashes2, w)
+
+    points1 = get_points(fp1, fp2, token1, hashes1, grams1)
+    points2 = get_points(fp1, fp2, token2, hashes2, grams2)
+    
+    merged_points1 = get_merged_points(points1)
+    merged_points2 = get_merged_points(points2)
+    return (merged_points1, merged_points2)
+
     '''
             text1 = get_text_from_file(self.file1)
         mergedPoints = get_platiarism(self.file1, self.file2, k, q, w)
